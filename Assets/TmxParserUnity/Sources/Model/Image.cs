@@ -1,4 +1,4 @@
-﻿namespace tmxparser.model {
+﻿namespace TmxParserUnity.Model {
 
     public class Image {
 

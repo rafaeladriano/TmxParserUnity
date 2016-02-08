@@ -1,8 +1,8 @@
-﻿using tmxparser.model;
+﻿using TmxParserUnity.Model;
 using System.Xml;
 using System.Collections.Generic;
 
-namespace tmxparser {
+namespace TmxParserUnity {
 
     public class TmxParser {
 
@@ -168,7 +168,7 @@ namespace tmxparser {
             return new Image(source, width, height);
         }
 
-        private static Object ParserObject(XmlNode objectNode) {
+        private static TileObject ParserObject(XmlNode objectNode) {
 
             int tileId = -1;
             float x = -1;
@@ -201,7 +201,7 @@ namespace tmxparser {
                 }
             }
 
-            return new Object(tileId, x, y, width, height);
+            return new TileObject(tileId, x, y, width, height);
         }
 
         private static TileSetLayer ParserTileSetLayer(XmlNode tilesetLayerNode) {
@@ -271,7 +271,7 @@ namespace tmxparser {
 
         private static ObjectGroupLayer ParserObjectGroup(XmlNode objectGroupLayerNode) {
 
-            List<Object> objects = new List<Object>();
+            List<TileObject> objects = new List<TileObject>();
 
             for (int i = 0; i < objectGroupLayerNode.ChildNodes.Count; i++) {
                 objects.Add(ParserObject(objectGroupLayerNode.ChildNodes.Item(i)));

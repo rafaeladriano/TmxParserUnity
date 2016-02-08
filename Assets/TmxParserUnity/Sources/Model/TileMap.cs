@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace tmxparser.model {
+namespace TmxParserUnity.Model {
 
     public class TileMap {
 

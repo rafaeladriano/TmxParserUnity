@@ -1,6 +1,6 @@
-﻿namespace tmxparser.model {
+﻿namespace TmxParserUnity.Model {
 
-    public class Object {
+    public class TileObject {
 
         private readonly int tileId;
         private readonly float x;
@@ -8,7 +8,7 @@
         private readonly int width;
         private readonly int height;
 
-        public Object(int tileId, float x, float y, int width, int height) {
+        public TileObject(int tileId, float x, float y, int width, int height) {
             this.tileId = tileId;
             this.x = x;
             this.y = y;
