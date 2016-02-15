@@ -54,20 +54,7 @@ namespace TmxParserUnity {
                 tilesets.Add(ParserTileSet(tilesetNodes.Item(i)));
             }
 
-            XmlNodeList tilesetLayerNodes =  mapNode.OwnerDocument.GetElementsByTagName(TAG_TILESET_LAYER);
-            for (int i = 0; i < tilesetLayerNodes.Count; i++) {
-                layers.Add(ParserTileSetLayer(tilesetLayerNodes.Item(i)));
-            }
-
-            XmlNodeList imageLayerNodes = mapNode.OwnerDocument.GetElementsByTagName(TAG_IMAGE_LAYER);
-            for (int i = 0; i < imageLayerNodes.Count; i++) {
-                layers.Add(ParserImageLayer(imageLayerNodes.Item(i)));
-            }
-
-            XmlNodeList objectGroupLayerNodes = mapNode.OwnerDocument.GetElementsByTagName(TAG_OBJECT_GROUP_LAYER);
-            for (int i = 0; i < objectGroupLayerNodes.Count; i++) {
-                layers.Add(ParserObjectGroup(objectGroupLayerNodes.Item(i)));
-            }
+            ParserLayers(mapNode, layers);
 
             int width = -1;
             int height = -1;
@@ -97,6 +84,26 @@ namespace TmxParserUnity {
             }
 
             return new TileMap(width, height, tileWidth, tileHeight, tilesets, layers);
+        }
+
+        private static void ParserLayers(XmlNode node, List<Layer> layers) {
+
+            switch (node.Name) {
+                case TAG_TILESET_LAYER:
+                    layers.Add(ParserTileSetLayer(node));
+                    return;
+                case TAG_IMAGE_LAYER:
+                    layers.Add(ParserImageLayer(node));
+                    return;
+                case TAG_OBJECT_GROUP_LAYER:
+                    layers.Add(ParserObjectGroup(node));
+                    return;
+            }
+
+            for (int i = 0; i < node.ChildNodes.Count; i++) {
+                ParserLayers(node.ChildNodes[i], layers);
+            }
+
         }
 
         private static TileSet ParserTileSet(XmlNode tilesetNode) {
@@ -168,13 +175,14 @@ namespace TmxParserUnity {
             return new Image(source, width, height);
         }
 
-        private static TileObject ParserObject(XmlNode objectNode) {
+        private static ShapeObject ParserObject(XmlNode objectNode) {
 
-            int tileId = -1;
+            int tileId = ShapeObject.NO_TILE;
             float x = -1;
             float y = -1;
-            int width = -1;
-            int height = -1;
+            float width = -1;
+            float height = -1;
+            string name = null;
 
             for (int i = 0; i < objectNode.Attributes.Count; i++) {
                 XmlNode attribute = objectNode.Attributes.Item(i);
@@ -184,6 +192,9 @@ namespace TmxParserUnity {
                     case "gid":
                         tileId = int.Parse(attribute.Value);
                         break;
+                    case "name":
+                        name = attribute.Value;
+                        break;
                     case "x":
                         x = float.Parse(attribute.Value);
                         break;
@@ -191,17 +202,17 @@ namespace TmxParserUnity {
                         y = float.Parse(attribute.Value);
                         break;
                     case "width":
-                        width = int.Parse(attribute.Value);
+                        width = float.Parse(attribute.Value);
                         break;
                     case "height":
-                        height = int.Parse(attribute.Value);
+                        height = float.Parse(attribute.Value);
                         break;
                     default:
                         break;
                 }
             }
 
-            return new TileObject(tileId, x, y, width, height);
+            return new ShapeObject(tileId, name, x, y, (int) width, (int) height);
         }
 
         private static TileSetLayer ParserTileSetLayer(XmlNode tilesetLayerNode) {
@@ -271,7 +282,7 @@ namespace TmxParserUnity {
 
         private static ObjectGroupLayer ParserObjectGroup(XmlNode objectGroupLayerNode) {
 
-            List<TileObject> objects = new List<TileObject>();
+            List<ShapeObject> objects = new List<ShapeObject>();
 
             for (int i = 0; i < objectGroupLayerNode.ChildNodes.Count; i++) {
                 objects.Add(ParserObject(objectGroupLayerNode.ChildNodes.Item(i)));
@@ -313,7 +324,7 @@ namespace TmxParserUnity {
                         opacity = float.Parse(attribute.Value);
                         break;
                     case "visible":
-                        visible = bool.Parse(attribute.Value);
+                        visible = int.Parse(attribute.Value) == 1;
                         break;
                     default:
                         break;

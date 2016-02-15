@@ -4,13 +4,13 @@ namespace TmxParserUnity.Model {
 
     public class ObjectGroupLayer : Layer {
 
-        private readonly List<TileObject> objects;
+        private readonly List<ShapeObject> objects;
 
-        public ObjectGroupLayer(List<TileObject> objects, string name, float offsetX, float offsetY, float opacity, bool visible) : base(name, offsetX, offsetY, opacity, visible) {
+        public ObjectGroupLayer(List<ShapeObject> objects, string name, float offsetX, float offsetY, float opacity, bool visible) : base(name, offsetX, offsetY, opacity, visible) {
             this.objects = objects;
         }
 
-        public List<TileObject> Objects
+        public List<ShapeObject> Objects
         {
             get
             {

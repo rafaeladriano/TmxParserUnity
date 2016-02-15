@@ -35,7 +35,7 @@ public class TileMapRenderer : MonoBehaviour {
                 tileLayer.Tiles = tiles;
 
                 tileLayer.transform.parent = transform;
-                tileLayer.gameObject.name = "[" + i + "]TileLayer";
+                tileLayer.gameObject.name = "[" + i + "]" + layer.Name;
 
             } else if (layer.GetType() == typeof(ObjectGroupLayer)) {
                 ObjectGroupRenderer objectLayer = Instantiate(ObjectGroupPrefab);
@@ -48,7 +48,7 @@ public class TileMapRenderer : MonoBehaviour {
                 objectLayer.WrapMode = WrapMode;
 
                 objectLayer.transform.parent = transform;
-                objectLayer.gameObject.name = "[" + i + "]ObjectGroupLayer";
+                objectLayer.gameObject.name = "[" + i + "]" + layer.Name;
 
             } else if (layer.GetType() == typeof(ImageLayer)) {
                 // TODO 
