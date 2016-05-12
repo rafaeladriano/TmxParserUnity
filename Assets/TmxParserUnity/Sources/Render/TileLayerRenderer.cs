@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using TmxParserUnity;
 using TmxParserUnity.Model;
 
 [RequireComponent(typeof(MeshFilter))]
@@ -21,26 +20,35 @@ public class TileLayerRenderer : MonoBehaviour {
     public int TileResolution;
     [HideInInspector]
     public Color[][] Tiles;
+    [HideInInspector]
+    public int Mask;
 
     private Color[] transparentColor;
 
     private const int NUMBER_VERTICES_SQUARE = 6; // 6 é número de vértices que tem um quadrado (= 2 triangulos)
-    private const float ALPHA_OPAQUE = 1.0f;   
+    private const float ALPHA_OPAQUE = 1.0f;
 
     void Start () {
+        Build();
+    }
+
+    public void Build() {
+
         transparentColor = new Color[TileResolution * TileResolution];
         for (int i = 0; i < transparentColor.Length; i++) {
             transparentColor[i] = new Color(0f, 0f, 0f, 0f);
         }
 
-        Debug.Log("> Build Tilemap");
-        Debug.Log("  # Tilemap Size: " + NumberTilesX * TileResolution + " x " + NumberTilesY * TileResolution);
-        Debug.Log("  # Tilemap Columns/Rowns: " + NumberTilesX + " x " + NumberTilesY);
-        Debug.Log("  # Tile Resolution: " + TileResolution);
-        Debug.Log("  # Screen Resolution: " + Camera.main.pixelWidth + " x " + Camera.main.pixelHeight);
+        Debug.Log("Layer [" +
+            " Name: " + gameObject.name +
+            ", Size: " + NumberTilesX * TileResolution + " x " + NumberTilesY * TileResolution +
+            ", Columns/Rowns: " + NumberTilesX + " x " + NumberTilesY +
+            ", Tile Resolution: " + TileResolution +" ]");
 
         BuildPlaneMesh();
         BuildTexture();
+
+        gameObject.layer = Mask;
     }
     
     private void BuildTexture() {
@@ -50,8 +58,7 @@ public class TileLayerRenderer : MonoBehaviour {
 
         Texture2D texture = new Texture2D(textureWidth, textureHeight);
 
-        Debug.Log(">> Build Texture");
-        Debug.Log("   # Texture Resolution: " + texture.width + " x " + texture.width);
+        Debug.Log("Texture [ Resolution: " + texture.width + " x " + texture.height + " ]");
 
         int tileRowIndex = 0;
         for (int y = NumberTilesY - 1; y > -1; y--) {
@@ -89,8 +96,7 @@ public class TileLayerRenderer : MonoBehaviour {
         int vNumberTilesY = NumberTilesY + 1;
         int numberVertices = vNumberTilesX * vNumberTilesY;
 
-        Debug.Log(">> Build Mesh");
-        Debug.Log("   # Number Vertices: " + numberVertices);
+        Debug.Log("Mesh [ Number Vertices: " + numberVertices + " ]");
 
         // Criar uma quadrado com a face para cima, mapeando o material
         Vector3[] vertices = new Vector3[numberVertices];
@@ -132,7 +138,7 @@ public class TileLayerRenderer : MonoBehaviour {
         mesh.normals = normals;
         mesh.uv = uv;
 
-        // Define o criado mesh para nosso filter/renderer/coliider
+        // Define o mesh criado para nosso filter/renderer/coliider
         MeshFilter meshFilter = GetComponent<MeshFilter>();
         meshFilter.mesh = mesh;
     }
@@ -147,5 +153,5 @@ public class TileLayerRenderer : MonoBehaviour {
         }
         return copyPixels;
     }
-	
+
 }

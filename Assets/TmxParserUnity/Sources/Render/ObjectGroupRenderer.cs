@@ -15,8 +15,16 @@ public class ObjectGroupRenderer : MonoBehaviour {
     public TextureWrapMode WrapMode;
     [HideInInspector]
     public int MapHeightInPixels;
+    [HideInInspector]
+    public int Mask;
 
-	void Start () {
+    void Start() {
+        Build();
+    }
+
+	public void Build () {
+
+        Debug.Log("Group Objects [ Name: "+ gameObject.name + ", Number Colliders: " + ObjectGroupLayer.Objects.Count + " ]");
 
         for (int i = 0; i < ObjectGroupLayer.Objects.Count; i++) {
 
@@ -37,7 +45,6 @@ public class ObjectGroupRenderer : MonoBehaviour {
                 SpriteRenderer spriteRenderer = Instantiate(SpritePrefab);
                 spriteRenderer.sprite = sprite;
 
-
                 collider = spriteRenderer.gameObject.GetComponent<BoxCollider2D>();
                 float colliderWidth = shapeObject.Width / (collider.bounds.max - collider.bounds.min).x;
                 float colliderHeight = shapeObject.Height / (collider.bounds.max - collider.bounds.min).y;
@@ -55,15 +62,15 @@ public class ObjectGroupRenderer : MonoBehaviour {
                 collider.offset = new Vector2(colliderOffsetX, -colliderOffsetY);
             }
 
-
-
             // Precisamos posicionar o sprite no topo e depois transladar negativamente com seu y, pois o Tiled coloca o y contrário
             collider.transform.position = new Vector3(transform.position.x, transform.position.y + MapHeightInPixels, transform.position.z);
             collider.transform.Translate(new Vector3(shapeObject.X, -shapeObject.Y, 0));
             collider.transform.parent = transform;
+            collider.transform.gameObject.layer = Mask;
             if (shapeObject.Name != null) {
                 collider.transform.name = shapeObject.Name;
             }
+            
         }
 
 	}
